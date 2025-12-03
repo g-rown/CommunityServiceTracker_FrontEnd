@@ -33,5 +33,24 @@ export default StyleSheet.create({
         backgroundColor: "#fff",
     },
 
+    passwordContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderWidth: 1, // Mimic the border of styles.input
+        borderColor: '#ccc', // Use your input border color
+        borderRadius: 5,     // Use your input border radius
+        marginBottom: 10,
+        height: 50, // Match styles.input height
+    },
+    passwordInput: {
+        flex: 1, // Allows the input to take up most of the space
+        height: '100%',
+        paddingHorizontal: 10,
+    },
+    eyeIcon: {
+        padding: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 
 });

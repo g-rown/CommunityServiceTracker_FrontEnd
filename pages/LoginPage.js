@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Button, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
+import { Feather } from '@expo/vector-icons';
 
 import styles from '../styles';
 
@@ -42,17 +43,28 @@ export default function LoginPage() {
                     value={username}
                     onChangeText={setUsername}
                 />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Password"
-                    secureTextEntry={!showPassword}
-                    value={password}
-                    onChangeText={setPassword}
-                />
-                <Button
-                    title={showPassword ? "Hide Password" : "Show Password"}
-                    onPress={() => setShowPassword(!showPassword)}
-                />
+
+                <View style={styles.passwordContainer}> 
+                    <TextInput
+                        style={styles.passwordInput} 
+                        placeholder="Password"
+                        secureTextEntry={!showPassword}
+                        value={password}
+                        onChangeText={setPassword}
+                    />
+                    
+                    <TouchableOpacity
+                        style={styles.eyeIcon}
+                        onPress={() => setShowPassword(!showPassword)}
+                    >
+                        <Feather 
+                            name={showPassword ? 'eye' : 'eye-off'} // Changes icon based on state
+                            size={20}
+                            color="#999"
+                        />
+                    </TouchableOpacity>
+                </View>
+
                 <Button title="Login" onPress={handleLogin} />
             </View>
         </View>
