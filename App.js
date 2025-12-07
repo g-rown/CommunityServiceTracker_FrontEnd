@@ -16,10 +16,6 @@ import StudentDashboard from './pages/StudentDashboard'
 import CommunityPrograms from './pages/CommunityPrograms'
 import ProgramApplication from './pages/ProgramApplication'
 import ServiceHistory from './pages/ServiceHistory'
-import AddProgram from './pages/AddProgram';
-import EditProgram from './pages/EditProgram';
-
-
 
 const Stack = createNativeStackNavigator(); 
 
@@ -42,8 +38,6 @@ export default function App() {
                 <Stack.Screen name="CommunityPrograms" component={CommunityPrograms} />
                 <Stack.Screen name="ProgramApplication" component={ProgramApplication} />
                 <Stack.Screen name="ServiceAccreditation" component={ServiceAccreditation} />
-                <Stack.Screen name="AddProgram" component={AddProgram} />
-                <Stack.Screen name="EditProgram" component={EditProgram} />
 
             </Stack.Navigator> 
         </NavigationContainer>
