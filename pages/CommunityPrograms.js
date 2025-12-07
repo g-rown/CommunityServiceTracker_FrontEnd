@@ -1,9 +1,9 @@
-// pages/CommunityPrograms.js
 import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, TouchableOpacity, ActivityIndicator } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-// 🔑 NEW: Import AsyncStorage
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
+
+// import styles from "../styles";
 
 export default function CommunityPrograms() {
     const [programs, setPrograms] = useState([]);
@@ -13,7 +13,7 @@ export default function CommunityPrograms() {
 
     const API_URL = "http://127.0.0.1:8000/api/programs/";
 
-    // 🚀 MODIFIED: Changed useEffect to an async function to retrieve the token
+    // Changed useEffect to an async function to retrieve the token
     useEffect(() => {
         const fetchPrograms = async () => {
             let token = null;
@@ -109,3 +109,4 @@ export default function CommunityPrograms() {
         </View>
     );
 }
+ 
