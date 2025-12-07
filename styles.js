@@ -66,4 +66,5 @@ export default StyleSheet.create({
         height: 200,
         width: 200,
     },
+
 });
