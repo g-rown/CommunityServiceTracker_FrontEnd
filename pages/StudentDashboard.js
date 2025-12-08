@@ -3,6 +3,7 @@ import { View, Text, Button, ImageBackground, StyleSheet, ActivityIndicator, Ale
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Progress from 'react-native-progress';
+import { TouchableOpacity } from 'react-native';
 
 import styles from '../styles';
 

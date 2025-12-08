@@ -93,42 +93,52 @@ export default function ServiceAccreditation() {
     }
 
     const LogEntry = ({ log }) => {
-    // 🛑 NEW: Use current_status instead of status
-    const isCompleted = log.current_status && log.current_status.toLowerCase() === "approved" || log.approved;
-    // Note: I changed the completion check from "completed" to "approved" based on accreditation context.
+    // FIX 1: Access the 'approved' field directly from the log object
+    const isApproved = log.approved;
+    
+    // FIX 2: Simplify the approval check logic. isApproved is the final checkmark.
+    // The conditional color logic can use the log.status (pending/ongoing/completed)
+    // to give visual cues BEFORE final approval.
+    const statusColor = isApproved ? 'green' : (log.status === 'pending' ? 'gray' : 'orange');
 
-    return (
-        <View key={log.id} style={{ /* ... styles ... */ }}>
-            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 5 }}>
-                {/* 🛑 FIX: This field is currently missing, needs backend fix (see Section 3) */}
-                👤 {log.student_full_name || 'N/A (Backend Fix Needed)'} 
-            </Text>
-            <Text style={{ fontSize: 16, marginBottom: 5 }}>
-                {/* 🛑 FIX: Access program.name */}
-                Program: {log.program?.name || 'N/A'} | 
-                {/* 🛑 FIX: Access program.facilitator (assuming ProgramDetailSerializer includes 'facilitator') */}
-                Facilitator: {log.program?.facilitator || 'N/A'}
-            </Text>
+    return (
+        <View key={log.id} style={{ /* ... styles ... */ }}>
+            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 5 }}>
+                👤 {log.student_full_name || 'N/A'} 
+            </Text>
+            <Text style={{ fontSize: 16, marginBottom: 5 }}>
+                Program: {log.program?.name || 'N/A'} | 
+                Facilitator: {log.program?.facilitator || 'N/A'}
+            </Text>
+            <Text style={{ fontSize: 14, marginBottom: 10 }}>
+                Hours: {log.program?.hours || 'N/A'} | Y&S: {log.course_section || 'N/A'}
+            </Text>
             <Text style={{ fontSize: 14, marginBottom: 10 }}>
-                {/* 🛑 FIX: Access program.required_hours (or whatever the field name is in ProgramDetailSerializer) */}
-                Hours: {log.program?.hours || 'N/A'}
-            </Text>
+                Emergency: {log.emergency_contact_name} ({log.emergency_contact_phone})
+            </Text>
 
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 10 }}>
-                <Text style={{ fontWeight: 'bold', color: isCompleted ? 'green' : 'orange' }}>
-                    {/* 🛑 FIX: Use current_status */}
-                    Status: {formatStatus(log.current_status)}
-                </Text>
-                <TouchableOpacity
-                    // ... rest of TouchableOpacity code
-                >
-                    <Text style={{ color: '#fff', fontWeight: 'bold' }}>
-                        {isCompleted ? "Approved" : "Approve Log"}
-                    </Text>
-                </TouchableOpacity>
-            </View>
-        </View>
-    );
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 10 }}>
+                <Text style={{ fontWeight: 'bold', color: statusColor }}>
+                    ✅ Approved: {isApproved ? 'Yes' : 'No'} | 
+                    {/* FIX 3: Use log.status */}
+                    Date Status: {formatStatus(log.status)}
+                </Text>
+                <TouchableOpacity
+                    onPress={() => handleApprove(log.id)}
+                    disabled={isApproved}
+                    style={{ 
+                        backgroundColor: isApproved ? '#4CAF50' : '#007bff', 
+                        padding: 10, 
+                        borderRadius: 5 
+                    }}
+                >
+                    <Text style={{ color: '#fff', fontWeight: 'bold' }}>
+                        {isApproved ? "Approved" : "Approve Log"}
+                    </Text>
+                </TouchableOpacity>
+            </View>
+        </View>
+    );
 };
 
     return (

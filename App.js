@@ -53,8 +53,8 @@ function StudentTabs() {
                             style={{ 
                                     width: iconSize, 
                                     height: iconSize,
-                                    tintColor: color,
-                                }} 
+                                    tintColor: color
+                                }}
                             />
                         );
                 },
