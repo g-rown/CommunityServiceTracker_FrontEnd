@@ -379,6 +379,210 @@ export default StyleSheet.create({
     marginTop: 20,
     },
 
+    /* ---------------------------------------------------------
+   MANAGE STUDENTS PAGE STYLES
+--------------------------------------------------------- */
+
+manageMainContainer: {
+    flex: 1,
+    paddingTop: 40,
+    alignItems: 'center',
+    backgroundColor: '#f8f9ff',
+},
+
+manageContentBox: {
+    width: '80%',
+    flex: 1,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#dcdcdc',
+    borderRadius: 16,
+    overflow: 'hidden',
+    elevation: 6,
+},
+
+manageHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+    backgroundColor: '#001e66',
+},
+
+manageHeaderText: {
+    fontSize: 26,
+    fontWeight: '700',
+    color: '#fff',
+    fontFamily: 'DM Sans',
+},
+
+studentScroll: {
+    flex: 1,
+    paddingHorizontal: 20,
+},
+
+studentScrollContent: {
+    paddingVertical: 20,
+},
+
+noStudentText: {
+    textAlign: 'center',
+    marginTop: 20,
+    color: '#555',
+    fontFamily: 'DM Sans',
+},
+
+studentCard: {
+    backgroundColor: '#ffffff',
+    padding: 18,
+    borderRadius: 14,
+    marginBottom: 18,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: '#eee',
+},
+
+studentName: {
+    fontSize: 20,
+    fontWeight: '700',
+    marginBottom: 6,
+    color: '#001e66',
+    fontFamily: 'DM Sans',
+},
+
+studentInfoBox: {
+    marginLeft: 5,
+    marginBottom: 10,
+},
+
+studentInfoText: {
+    fontSize: 14,
+    color: '#333',
+    fontFamily: 'DM Sans',
+},
+
+buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 12,
+},
+
+editButton: {
+    backgroundColor: '#001e66',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+},
+
+deleteButton: {
+    backgroundColor: '#cf1a24',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    marginLeft: 10,
+},
+
+buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontFamily: 'DM Sans',
+},
+
+/* ------------------ LOADING / ERROR ------------------ */
+
+loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+},
+
+loadingText: {
+    marginTop: 10,
+    fontFamily: 'DM Sans',
+},
+
+errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+},
+
+errorText: {
+    color: '#cf1a24',
+    marginBottom: 10,
+    fontFamily: 'DM Sans',
+},
+
+goToLoginText: {
+    color: '#001e66',
+    fontWeight: '600',
+    fontFamily: 'DM Sans',
+},
+
+/* ------------------ MODAL ------------------ */
+
+modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+},
+
+modalBox: {
+    width: '60%',
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 25,
+    elevation: 10,
+},
+
+modalTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    marginBottom: 10,
+    color: '#001e66',
+    fontFamily: 'DM Sans',
+},
+
+modalMessage: {
+    fontSize: 15,
+    marginBottom: 20,
+    fontFamily: 'DM Sans',
+},
+
+modalButtonRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+},
+
+modalCancelButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    backgroundColor: '#ccc',
+},
+
+modalCancelText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontFamily: 'DM Sans',
+},
+
+modalDeleteButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    marginLeft: 10,
+    backgroundColor: '#cf1a24',
+},
+
+modalDeleteText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontFamily: 'DM Sans',
+},
+
 });
 
 
