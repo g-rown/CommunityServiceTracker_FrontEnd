@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'; // 👈 FIXED: Added useState and useEffect
+import React, { useState, useEffect } from 'react';
 import { View, Text, Button, ImageBackground, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -114,15 +114,26 @@ export default function StudentDashboard() {
                     </Text>
                 </View>
 
-                <Button
-                    title="View Available Programs"
+                {/* View Programs Button */}
+                <TouchableOpacity 
+                    style={styles.dashboardButton}
                     onPress={() => navigation.navigate('CommunityPrograms')}
-                />
+                >
+                    <Text style={styles.dashboardButtonText}>
+                        View Available Programs
+                    </Text>
+                </TouchableOpacity>
 
-                <Button
-                    title="Review Service History"
+                {/* Service History Button */}
+                <TouchableOpacity 
+                    style={styles.dashboardButton}
                     onPress={() => navigation.navigate('ServiceHistory')}
-                />
+                >
+                    <Text style={styles.dashboardButtonText}>
+                        Review Service History
+                    </Text>
+                </TouchableOpacity>
+
             </View>
         </ImageBackground>
     );

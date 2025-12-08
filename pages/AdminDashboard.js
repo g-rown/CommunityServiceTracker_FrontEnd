@@ -13,29 +13,46 @@ export default function AdminDashboard() {
             style={styles.bg}
         >
             <View style={styles.container}>
-                <Text>Welcome, ADMIN!</Text>
+                <Text style={styles.dashboardWelcome}>
+                    Welcome, ADMIN!
+                </Text>
 
-                <Button
-                    title="Manage Students"
+                <TouchableOpacity
+                    style={styles.dashboardButton}
                     onPress={() => navigation.navigate('ManageStudents')}
-                />
+                >
+                    <Text style={styles.dashboardButtonText}>
+                        Manage Students
+                    </Text>
+                </TouchableOpacity>
                 
-                <Button
-                    title="Manage Programs"
+                <TouchableOpacity
+                    style={styles.dashboardButton}
                     onPress={() => navigation.navigate('ManagePrograms')}
-                />
+                >
+                    <Text style={styles.dashboardButtonText}>
+                        Manage Programs
+                    </Text>
+                </TouchableOpacity>
                 
-                <Button
-                    title="Review Submissions"
+                <TouchableOpacity
+                    style={styles.dashboardButton}
                     onPress={() => navigation.navigate('ReviewSubmissions')}
-                />
+                >
+                    <Text style={styles.dashboardButtonText}>
+                        Review Submissions
+                    </Text>
+                </TouchableOpacity>
 
-                <Button
-                    title="Service Accreditation"
+                <TouchableOpacity
+                    style={styles.dashboardButton}
                     onPress={() => navigation.navigate('ServiceAccreditation')}
-                />
+                >
+                    <Text style={styles.dashboardButtonText}>
+                        Service Accreditation
+                    </Text>
+                </TouchableOpacity>
             </View>
         </ImageBackground>
     );
 }
-
