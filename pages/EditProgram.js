@@ -62,7 +62,7 @@ export default function EditProgram() {
             const parsedSlots = parseInt(slots);
 
             const response = await axios.put(
-                `${API_BASE_URL}/programs/${program.id}/`,
+                `${API_BASE_URL}/${program.id}/`,
                 {
                     name,
                     description,
