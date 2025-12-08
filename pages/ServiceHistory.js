@@ -1,20 +1,16 @@
-// servicehistory.js - CORRECTED VERSION
+// servicehistory.js - UA DESIGN IMPLEMENTED
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, ActivityIndicator, Alert, Button } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator, Alert, Button, StyleSheet, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import styles from '../styles'; 
-
-// 🎯 API_BASE_URL is correct: http://127.0.0.1:8000/api/service-history/ 
 const API_BASE_URL = 'http://127.0.0.1:8000/api/service-history/'; 
 
 export default function ApplicationRecords() {
     const navigation = useNavigation();
     
-    // State for application data, loading status, and error messages
     const [applications, setApplications] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -23,7 +19,6 @@ export default function ApplicationRecords() {
         const fetchApplications = async () => {
             setIsLoading(true);
             try {
-                // 1. Retrieve the token
                 const token = await AsyncStorage.getItem('userToken');
 
                 if (!token) {
@@ -31,32 +26,20 @@ export default function ApplicationRecords() {
                     return;
                 }
 
-                // 2. Fetch the student's applications using the secured endpoint
-                // ✅ FIX: Removed the incorrect '/applications/' from the URL
-                const response = await axios.get(
-                    API_BASE_URL, 
-                    {
-                        headers: {
-                            'Authorization': `Token ${token}`
-                        }
-                    }
-                );
+                const response = await axios.get(API_BASE_URL, {
+                    headers: { 'Authorization': `Token ${token}` }
+                });
                 
                 setApplications(response.data); 
                 
             } catch (err) {
-                console.error("Error fetching applications:", err.response?.data || err.message);
-                
                 let errorMessage = "Failed to load application records.";
                 if (err.response && err.response.status === 401) {
                     errorMessage = "Session expired. Please log in again.";
                 } else if (err.response) {
-                    // This handles the 404 error we saw previously
                     errorMessage = `Server Error (${err.response.status}): ${JSON.stringify(err.response.data)}`;
                 }
-                
                 setError(errorMessage);
-                
             } finally {
                 setIsLoading(false);
             }
@@ -65,31 +48,25 @@ export default function ApplicationRecords() {
         fetchApplications();
     }, []); 
 
-    // Helper function to render each application item
     const renderApplicationItem = ({ item }) => (
         <View style={styles.itemContainer}>
-            <Text style={styles.header}>
-                Program: {item.program.name} 
+            <Text style={styles.cardHeader}>
+                Program: {item.program.name}
             </Text>
-            {/* ✅ FIX: Changed submission_date to submitted_at */}
             <Text style={styles.detailText}>
                 Submitted On: {new Date(item.submitted_at).toLocaleDateString()}
             </Text>
+            <Text style={styles.detailText}>Hours: {item.program.hours}</Text>
             <Text style={styles.detailText}>
-                Hours: {item.program.hours}
-            </Text>
-            <Text style={styles.detailText}>
-                Status: **{(item.current_status || 'N/A').toUpperCase()}**
+                Status: {(item.current_status || 'N/A').toUpperCase()}
             </Text>
         </View>
     );
 
-    // --- RENDER LOGIC ---
-
     if (isLoading) {
         return (
             <View style={[styles.container, styles.center]}>
-                <ActivityIndicator size="large" color="#0000ff" />
+                <ActivityIndicator size="large" color="#001e66" />
                 <Text>Loading Application Records...</Text>
             </View>
         );
@@ -105,15 +82,98 @@ export default function ApplicationRecords() {
     }
 
     return (
+        <ImageBackground
+            source={require('../assets/redox-01.png')}
+            style={styles.bg}
+        >
         <View style={styles.container}>
-            <Text style={styles.header}>Program Applications ({applications.length})</Text>
+            <Text style={styles.mainHeader}>
+                Program Applications ({applications.length})
+            </Text>
             
             <FlatList
                 data={applications}
                 keyExtractor={item => item.id.toString()}
                 renderItem={renderApplicationItem}
-                ListEmptyComponent={<Text style={styles.emptyText}>No applications submitted yet.</Text>}
+                ListEmptyComponent={
+                    <Text style={styles.emptyText}>No applications submitted yet.</Text>
+                }
             />
         </View>
+        </ImageBackground>
     );
 }
+
+// ----------------------------------------------------
+// UA DESIGN STYLES (BLUE #001e66, RED #cf1a24, YELLOW #ffd800)
+// ----------------------------------------------------
+
+const styles = StyleSheet.create({
+    bg: {
+        flex: 1,
+        resizeMode: 'cover',
+    },
+
+    container: {
+        flex: 1,
+        padding: 20,
+        backgroundColor: 'rgba(255,255,255,0.85)',
+    },
+
+    mainHeader: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        color: '#001e66',
+        textAlign: 'center',
+        marginBottom: 20,
+        marginTop: 10,
+    },
+
+    itemContainer: {
+        backgroundColor: '#fff',
+        padding: 18,
+        borderRadius: 12,
+        marginBottom: 15,
+        borderLeftWidth: 6,
+        borderLeftColor: '#cf1a24', // UA RED ACCENT
+        shadowColor: '#000',
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        shadowOffset: { width: 0, height: 2 },
+        elevation: 3,
+    },
+
+    cardHeader: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#001e66',
+        marginBottom: 6,
+    },
+
+    detailText: {
+        fontSize: 16,
+        color: '#001e66',
+        marginBottom: 3,
+    },
+
+    center: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    errorText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#cf1a24',
+        textAlign: 'center',
+        marginBottom: 10,
+    },
+
+    emptyText: {
+        fontSize: 16,
+        textAlign: 'center',
+        color: '#001e66',
+        marginTop: 20,
+    },
+});

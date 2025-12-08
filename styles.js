@@ -518,7 +518,7 @@ manageHeaderText: {
     fontSize: 26,
     fontWeight: '700',
     color: '#fff',
-    fontFamily: 'DM Sans',
+    fontFamily: '',
 },
 
 studentScroll: {
@@ -534,7 +534,7 @@ noStudentText: {
     textAlign: 'center',
     marginTop: 20,
     color: '#555',
-    fontFamily: 'DM Sans',
+    fontFamily: '',
 },
 
 studentCard: {
@@ -552,7 +552,7 @@ studentName: {
     fontWeight: '700',
     marginBottom: 6,
     color: '#001e66',
-    fontFamily: 'DM Sans',
+    fontFamily: '',
 },
 
 studentInfoBox: {
@@ -563,7 +563,7 @@ studentInfoBox: {
 studentInfoText: {
     fontSize: 14,
     color: '#333',
-    fontFamily: 'DM Sans',
+    fontFamily: '',
 },
 
 buttonRow: {
@@ -590,7 +590,7 @@ deleteButton: {
 buttonText: {
     color: '#fff',
     fontWeight: 'bold',
-    fontFamily: 'DM Sans',
+    fontFamily: '',
 },
 
 /* ------------------ LOADING / ERROR ------------------ */

@@ -5,7 +5,8 @@ import {
     FlatList,
     TouchableOpacity,
     ActivityIndicator,
-    StyleSheet, // Import StyleSheet for better design
+    StyleSheet,
+    ImageBackground, // Import StyleSheet for better design
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
@@ -22,8 +23,8 @@ const COLORS = {
 
 // --- FONT FAMILY (Assuming DM Sans is available in your environment) ---
 // If 'DMSans' is not a system font, you might need to load it using expo-font or similar.
-const FONT_FAMILY = 'DM Sans'; 
-const FONT_FAMILY_BOLD = 'DM Sans Bold'; // Assuming a bold variant is available
+const FONT_FAMILY = ''; 
+const FONT_FAMILY_BOLD = ''; // Assuming a bold variant is available
 
 export default function CommunityPrograms() {
     const [programs, setPrograms] = useState([]);
@@ -128,6 +129,9 @@ export default function CommunityPrograms() {
     );
 
     return (
+        <ImageBackground
+            source={require('../assets/redox-01.png')}
+            style={styles.bg}>
         <View style={styles.container}>
             <Text style={styles.headerTitle}>Community Programs</Text>
 
@@ -152,6 +156,7 @@ export default function CommunityPrograms() {
                 />
             )}
         </View>
+        </ImageBackground>
     );
 }
 

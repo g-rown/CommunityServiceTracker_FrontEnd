@@ -7,7 +7,8 @@ import {
     Alert, 
     ScrollView, 
     ActivityIndicator,
-    StyleSheet 
+    StyleSheet,
+    ImageBackground,
 } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 
@@ -135,6 +136,9 @@ export default function ProgramApplication({ route, navigation }) {
     };
 
     return (
+        <ImageBackground
+            source={require('../assets/redox-01.png')}
+            style={styles.bg}>
         <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
             
             <Text style={styles.headerTitle}>Program Application</Text>
@@ -223,6 +227,7 @@ export default function ProgramApplication({ route, navigation }) {
             </Text>
 
         </ScrollView>
+        </ImageBackground>
     );
 }
 
