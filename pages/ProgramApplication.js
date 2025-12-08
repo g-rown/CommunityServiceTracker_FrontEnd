@@ -1,4 +1,3 @@
-// pages/ProgramApplication.js
 import React, { useState, useEffect } from "react";
 import { 
     View, 
@@ -7,12 +6,28 @@ import {
     TouchableOpacity, 
     Alert, 
     ScrollView, 
-    ActivityIndicator 
+    ActivityIndicator,
+    StyleSheet 
 } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 
-// Function to fetch the auth token (assuming this exists outside the component or is defined here)
-// If you defined this function elsewhere (e.g., in a utilities file), you can keep that version.
+// --- COLOR PALETTE ---
+const COLORS = {
+    primaryBlue: '#001e66', // Blue shade
+    primaryRed: '#cf1a24',   // Red shade
+    primaryYellow: '#ffd800',// Yellow shade
+    backgroundLight: '#f0f4f7', 
+    textDark: '#333333',
+    textLight: '#ffffff',
+    successGreen: '#28a745', 
+    disabledGray: '#6c757d',
+};
+
+// --- FONT FAMILY ---
+const FONT_FAMILY = 'DM Sans'; 
+const FONT_FAMILY_BOLD = 'DM Sans Bold'; 
+
+// Function to fetch the auth token
 const getAuthToken = async () => {
     try {
         const token = await AsyncStorage.getItem('userToken');
@@ -24,18 +39,13 @@ const getAuthToken = async () => {
 };
 
 export default function ProgramApplication({ route, navigation }) {
-    // 🔑 FIX: Ensure 'program' is correctly destructured from 'route.params'
     const { program } = route.params;
 
     const API_URL = "http://127.0.0.1:8000/api/applications/";
 
-    // 1. Authentication State
     const [authToken, setAuthToken] = useState(null);
-
-    // 2. Submission Lock State (The new fix for double submission)
     const [isSubmitting, setIsSubmitting] = useState(false); 
 
-    // 3. Form State
     const [form, setForm] = useState({
         emergency_contact_name: '',
         emergency_contact_phone: '',
@@ -48,7 +58,6 @@ export default function ProgramApplication({ route, navigation }) {
         });
     };
 
-    // Existing useEffect for loading token
     useEffect(() => {
         const loadToken = async () => {
             const token = await getAuthToken();
@@ -58,7 +67,6 @@ export default function ProgramApplication({ route, navigation }) {
     }, []);
 
     const handleSubmit = async () => {
-        // Validation check for empty fields (optional, but good practice)
         if (!form.emergency_contact_name || !form.emergency_contact_phone) {
              Alert.alert("Validation Error", "Please fill in all emergency contact fields.");
              return;
@@ -70,12 +78,10 @@ export default function ProgramApplication({ route, navigation }) {
             return;
         }
         
-        // 🔑 STEP 1: Set submission state to true immediately
         setIsSubmitting(true); 
 
         const payload = {
             ...form,
-            // CRITICAL: Send program_id which is expected by the backend serializer
             program_id: program.id, 
         };
 
@@ -98,7 +104,6 @@ export default function ProgramApplication({ route, navigation }) {
                     if (errorJson.detail) {
                         errorMessage = errorJson.detail;
                     } else if (Object.keys(errorJson).length > 0) {
-                        // Handle serializer errors (e.g., if program_id fails validation)
                          errorMessage = Object.keys(errorJson).map(key => `${key.replace(/_/g, ' ')}: ${errorJson[key].join(', ')}`).join('\n');
                     } else {
                         errorMessage = JSON.stringify(errorJson, null, 2);
@@ -118,76 +123,235 @@ export default function ProgramApplication({ route, navigation }) {
                 return; 
             }
             
-            // Success path
-            // const data = await response.json(); // You can comment this out if not needed
-            Alert.alert("Success", "Application Submitted!");
+            Alert.alert("Success", `Your application for ${program.name} has been submitted!`);
             navigation.goBack();
 
         } catch (error) {
             console.error("Network or Fetch Initialization Error:", error);
             Alert.alert("Network Error", "Could not connect to the server.");
         } finally {
-             // 🔑 STEP 2: Always reset submission state
              setIsSubmitting(false); 
         }
     };
 
     return (
-        <ScrollView style={{ padding: 20 }}>
-            <Text style={{ fontSize: 22, fontWeight: "bold", marginBottom: 20 }}>
-                Apply for: {program.name} 📝
-            </Text>
+        <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
+            
+            <Text style={styles.headerTitle}>Program Application</Text>
 
-            {/* Application Information */}
-            <View style={{ marginBottom: 20, padding: 10, borderWidth: 1, borderColor: '#ddd', borderRadius: 5 }}>
-                <Text style={{ fontWeight: 'bold', color: '#007bff' }}>Program Details</Text>
-                <Text>Location: {program.location}</Text>
-                <Text>Date: {program.date}</Text>
-                <Text>Hours: {program.hours}</Text>
+            {/* Program Details Card */}
+            <View style={styles.programDetailCard}>
+                <Text style={styles.programName}>{program.name}</Text>
+                
+                {/* Each detail is wrapped in a View to center it vertically */}
+                <View style={styles.detailBlock}>
+                    <Text style={styles.detailLabelText}>Facilitator:</Text>
+                    <Text style={styles.detailValueText}>{program.facilitator}</Text>
+                </View>
+
+                <View style={styles.detailBlock}>
+                    <Text style={styles.detailLabelText}>Location:</Text>
+                    <Text style={styles.detailValueText}>{program.location}</Text>
+                </View>
+
+                <View style={styles.detailBlock}>
+                    <Text style={styles.detailLabelText}>Date:</Text>
+                    <Text style={styles.detailValueText}>{program.date}</Text>
+                </View>
+
+                <View style={styles.detailBlock}>
+                    <Text style={styles.detailLabelText}>Hours:</Text>
+                    <Text style={styles.detailValueText}>{program.hours}</Text>
+                </View>
+
+                {/* Description is kept as a single Text element */}
+                <View style={styles.detailBlock}>
+                    <Text style={styles.detailLabelText}>Description:</Text>
+                    <Text style={[styles.detailValueText, styles.descriptionValue]}>{program.description}</Text>
+                </View>
             </View>
+
+            <Text style={styles.sectionHeader}>Emergency Contact Information</Text>
 
             {/* Form Fields */}
             {Object.keys(form).map((key) => (
-                <View key={key} style={{ marginTop: 15 }}>
-                    <Text style={{ fontWeight: "bold", marginBottom: 5 }}>
+                <View key={key} style={styles.inputGroup}>
+                    <Text style={styles.inputLabel}>
                         {key.replace(/_/g, " ").toUpperCase()}
                     </Text>
                     <TextInput
-                        style={{
-                            borderWidth: 1,
-                            borderColor: "#ccc",
-                            borderRadius: 5,
-                            padding: 10
-                        }}
+                        style={styles.textInput}
                         value={form[key]}
                         onChangeText={(value) => handleChange(key, value)}
-                        // Disable input fields while submitting
                         editable={!isSubmitting} 
+                        placeholder={
+                            key === 'emergency_contact_name' 
+                                ? 'e.g., Jane Doe' 
+                                : 'e.g., 555-123-4567'
+                        }
+                        keyboardType={
+                            key.includes('phone') ? 'phone-pad' : 'default'
+                        }
                     />
                 </View>
             ))}
 
             <TouchableOpacity
                 onPress={handleSubmit}
-                // 🔑 STEP 3: Disable button if token is missing OR if submitting
                 disabled={!authToken || isSubmitting} 
-                style={{
-                    marginTop: 30,
-                    padding: 15,
-                    // Change color based on submission state
-                    backgroundColor: (authToken && !isSubmitting) ? "#28a745" : "#6c757d", 
-                    borderRadius: 5
-                }}
+                style={[
+                    styles.submitButton, 
+                    { 
+                        backgroundColor: isSubmitting 
+                            ? COLORS.disabledGray 
+                            : COLORS.primaryBlue 
+                    }
+                ]}
             >
-                <Text style={{ color: "#fff", textAlign: "center", fontSize: 16 }}>
-                    {/* 🔑 STEP 4: Show a loading indicator while submitting */}
-                    {isSubmitting ? (
-                        <ActivityIndicator color="#fff" />
-                    ) : (
-                        authToken ? "Submit Application" : "Loading Authentication..."
-                    )}
-                </Text>
+                {isSubmitting ? (
+                    <ActivityIndicator color={COLORS.textLight} />
+                ) : (
+                    <Text style={styles.submitButtonText}>
+                        {authToken ? "Submit Application" : "Loading Authentication..."}
+                    </Text>
+                )}
             </TouchableOpacity>
+            
+            {/* Optional: Add a brief policy/reminder */}
+            <Text style={styles.policyText}>
+                By submitting this form, you agree to comply with program policies.
+            </Text>
+
         </ScrollView>
     );
 }
+
+// --- STYLESHEET ---
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: COLORS.backgroundLight,
+    },
+    scrollContent: {
+        padding: 20,
+    },
+    headerTitle: {
+        fontSize: 30,
+        fontFamily: FONT_FAMILY_BOLD, 
+        color: COLORS.primaryBlue,
+        marginBottom: 20,
+        textAlign: 'center',
+        borderBottomWidth: 3,
+        borderBottomColor: COLORS.primaryYellow,
+        paddingBottom: 5,
+    },
+    // --- Program Details Card ---
+    programDetailCard: {
+        backgroundColor: COLORS.textLight,
+        padding: 20,
+        marginBottom: 20,
+        borderRadius: 12,
+        borderLeftWidth: 5,
+        borderLeftColor: COLORS.primaryRed,
+        shadowColor: COLORS.primaryBlue,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
+        // 🔑 KEY CHANGE: Center card contents horizontally
+        alignItems: 'center', 
+    },
+    programName: {
+        fontSize: 22,
+        fontFamily: FONT_FAMILY_BOLD,
+        color: COLORS.primaryBlue,
+        marginBottom: 8,
+        textAlign: 'center', // 🔑 Center the title text
+        width: '100%',
+    },
+    // 🔑 NEW BLOCK STYLE: Wraps label and value, centers itself within the card
+    detailBlock: {
+        marginBottom: 8,
+        alignItems: 'center', // Centers the label and value within this block
+        width: '100%', 
+    },
+    detailLabelText: {
+        // Label text uses FONT_FAMILY (regular)
+        fontSize: 14,
+        fontFamily: FONT_FAMILY,
+        color: COLORS.textDark,
+        marginBottom: 2, // Space between label and value
+        textAlign: 'center', // 🔑 Center label text
+    },
+    // The actual value will use this bold style
+    detailValueText: {
+        fontFamily: FONT_FAMILY_BOLD,
+        color: COLORS.textDark,
+        textAlign: 'center', // 🔑 Center value text
+        paddingHorizontal: 5, // Optional: gives value text some breathing room
+    },
+    descriptionValue: {
+        fontFamily: FONT_FAMILY, // Description is often better read in regular font
+        marginTop: 5,
+        lineHeight: 20,
+        paddingTop: 5,
+        borderTopWidth: 1,
+        borderTopColor: '#eee',
+    },
+    sectionHeader: {
+        fontSize: 18,
+        fontFamily: FONT_FAMILY_BOLD,
+        color: COLORS.textDark,
+        marginTop: 10,
+        marginBottom: 10,
+        paddingBottom: 5,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ddd',
+    },
+    // --- Form Fields ---
+    inputGroup: {
+        marginTop: 15,
+    },
+    inputLabel: {
+        fontFamily: FONT_FAMILY_BOLD,
+        fontSize: 14,
+        color: COLORS.primaryBlue,
+        marginBottom: 5,
+    },
+    textInput: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 8,
+        padding: 12,
+        fontSize: 16,
+        fontFamily: FONT_FAMILY,
+        backgroundColor: COLORS.textLight,
+        color: COLORS.textDark,
+    },
+    // --- Submission Button ---
+    submitButton: {
+        marginTop: 30,
+        padding: 15,
+        borderRadius: 8,
+        alignItems: 'center',
+        shadowColor: COLORS.primaryBlue,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 3,
+        elevation: 5,
+    },
+    submitButtonText: {
+        color: COLORS.textLight,
+        textAlign: "center",
+        fontSize: 18,
+        fontFamily: FONT_FAMILY_BOLD,
+        textTransform: 'uppercase',
+    },
+    policyText: {
+        marginTop: 20,
+        fontSize: 12,
+        fontFamily: FONT_FAMILY,
+        color: COLORS.disabledGray,
+        textAlign: 'center',
+    }
+});
