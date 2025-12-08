@@ -16,11 +16,9 @@ export default function ManageStudents() {
     const [error, setError] = useState(null);
     const [authToken, setAuthToken] = useState(null);
 
-    // Delete Modal state
     const [deleteModalVisible, setDeleteModalVisible] = useState(false);
     const [selectedStudent, setSelectedStudent] = useState(null);
 
-    // ---------------- FETCH STUDENTS ----------------
     const fetchStudents = async (token) => {
         setIsLoading(true);
         try {
@@ -30,12 +28,9 @@ export default function ManageStudents() {
             setStudents(response.data);
             setError(null);
         } catch (err) {
-            console.error("Error fetching students:", err.response?.data || err.message);
             let errorMessage = "Failed to load students.";
-            if (err.response && err.response.status === 403) {
+            if (err.response?.status === 403) {
                 errorMessage = "Access Denied: You must be an Admin to view this list.";
-            } else if (err.response) {
-                errorMessage = `Server Error (${err.response.status}): ${JSON.stringify(err.response.data)}`;
             }
             setError(errorMessage);
         } finally {
@@ -43,7 +38,6 @@ export default function ManageStudents() {
         }
     };
 
-    // ---------------- LOAD TOKEN + FETCH ----------------
     useFocusEffect(
         useCallback(() => {
             const loadTokenAndFetch = async () => {
@@ -65,7 +59,6 @@ export default function ManageStudents() {
         }, [])
     );
 
-    // ---------------- DELETE STUDENT ----------------
     const confirmDeleteStudent = (student) => {
         setSelectedStudent(student);
         setDeleteModalVisible(true);
@@ -80,119 +73,76 @@ export default function ManageStudents() {
             });
             fetchStudents(authToken);
         } catch (err) {
-            console.error("Delete error:", err.response?.data || err.message);
-            alert(err.response?.data?.detail || "Could not delete student.");
+            alert("Could not delete student.");
         } finally {
             setDeleteModalVisible(false);
             setSelectedStudent(null);
         }
     };
 
-    // ---------------- EDIT STUDENT ----------------
     const handleEditStudent = (studentData) => {
         navigation.navigate('EditStudent', { student: studentData });
     };
 
-    // ---------------- LOADING VIEW ----------------
     if (isLoading) {
         return (
-            <View style={[styles.container, { flex: 1, justifyContent: 'center', alignItems: 'center' }]}>
-                <ActivityIndicator size="large" color="#007bff" />
-                <Text>Loading Student Data...</Text>
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#001e66" />
+                <Text style={styles.loadingText}>Loading Student Data...</Text>
             </View>
         );
     }
 
-    // ---------------- ERROR VIEW ----------------
     if (error) {
         return (
-            <View style={[styles.container, { flex: 1, justifyContent: 'center', alignItems: 'center' }]}>
-                <Text style={{ color: 'red', marginBottom: 10 }}>{error}</Text>
+            <View style={styles.errorContainer}>
+                <Text style={styles.errorText}>{error}</Text>
                 <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                    <Text style={{ color: '#007bff' }}>Go to Login</Text>
+                    <Text style={styles.goToLoginText}>Go to Login</Text>
                 </TouchableOpacity>
             </View>
         );
     }
 
-    // ---------------- MAIN VIEW ----------------
     return (
-        <View style={[styles.container, { flex: 1, paddingTop: 40, alignItems: 'center' }]}>
-            <View style={{
-                width: '50%',
-                flex: 1,
-                backgroundColor: '#fff',
-                borderWidth: 1,
-                borderColor: '#e0e0e0',
-                borderRadius: 12,
-                overflow: 'hidden'
-            }}>
-                {/* HEADER */}
-                <View style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    paddingHorizontal: 20,
-                    paddingVertical: 10,
-                    backgroundColor: '#f0f0f0',
-                    elevation: 4,
-                    borderBottomWidth: 1,
-                    borderBottomColor: '#e6e6e6'
-                }}>
-                    <Text style={{ fontSize: 26, fontWeight: 'bold' }}>Students</Text>
+        <View style={styles.manageMainContainer}>
+            <View style={styles.manageContentBox}>
+                <View style={styles.manageHeader}>
+                    <Text style={styles.manageHeaderText}>Students</Text>
                 </View>
 
-                {/* STUDENT CARDS */}
-                <ScrollView style={{ flex: 1, paddingHorizontal: 20 }} contentContainerStyle={{ paddingVertical: 20 }}>
+                <ScrollView style={styles.studentScroll} contentContainerStyle={styles.studentScrollContent}>
                     {students.length === 0 ? (
-                        <Text style={{ textAlign: 'center', marginTop: 20, color: '#666' }}>
-                            No students found.
-                        </Text>
+                        <Text style={styles.noStudentText}>No students found.</Text>
                     ) : students.map(student => (
-                        <View key={student.id} style={{
-                            backgroundColor: '#fff',
-                            padding: 15,
-                            borderRadius: 12,
-                            marginBottom: 15,
-                            elevation: 3,
-                            borderWidth: 1,
-                            borderColor: '#ececec'
-                        }}>
-                            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 5 }}>
+                        <View key={student.id} style={styles.studentCard}>
+                            <Text style={styles.studentName}>
                                 {student.user.first_name} {student.user.last_name}
                             </Text>
 
-                            <View style={{ marginLeft: 5, marginBottom: 10 }}>
-                                <Text>Email: {student.user.email}</Text>
-                                <Text>Course/Year/Section: {student.course}/{student.year_level}/{student.section}</Text>
-                                <Text>Hours Completed: {student.hours_completed} / {student.total_required_hours}</Text>
+                            <View style={styles.studentInfoBox}>
+                                <Text style={styles.studentInfoText}>Email: {student.user.email}</Text>
+                                <Text style={styles.studentInfoText}>
+                                    Course/Year/Section: {student.course}/{student.year_level}/{student.section}
+                                </Text>
+                                <Text style={styles.studentInfoText}>
+                                    Hours Completed: {student.hours_completed} / {student.total_required_hours}
+                                </Text>
                             </View>
 
-                            {/* Buttons */}
-                            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 10 }}>
+                            <View style={styles.buttonRow}>
                                 <TouchableOpacity
-                                    style={{
-                                        backgroundColor: '#007bff',
-                                        paddingVertical: 6,
-                                        paddingHorizontal: 15,
-                                        borderRadius: 8
-                                    }}
+                                    style={styles.editButton}
                                     onPress={() => handleEditStudent(student)}
                                 >
-                                    <Text style={{ color: '#fff', fontWeight: 'bold' }}>Edit</Text>
+                                    <Text style={styles.buttonText}>Edit</Text>
                                 </TouchableOpacity>
 
                                 <TouchableOpacity
-                                    style={{
-                                        backgroundColor: 'red',
-                                        paddingVertical: 6,
-                                        paddingHorizontal: 15,
-                                        borderRadius: 8,
-                                        marginLeft: 10
-                                    }}
+                                    style={styles.deleteButton}
                                     onPress={() => confirmDeleteStudent(student)}
                                 >
-                                    <Text style={{ color: '#fff', fontWeight: 'bold' }}>Delete</Text>
+                                    <Text style={styles.buttonText}>Delete</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -200,56 +150,27 @@ export default function ManageStudents() {
                 </ScrollView>
             </View>
 
-            {/* ---------------- DELETE MODAL ---------------- */}
+            {/* DELETE MODAL */}
             <Modal
                 visible={deleteModalVisible}
                 transparent={true}
                 animationType="fade"
                 onRequestClose={() => setDeleteModalVisible(false)}
             >
-                <View style={{
-                    flex: 1,
-                    backgroundColor: 'rgba(0,0,0,0.5)',
-                    justifyContent: 'center',
-                    alignItems: 'center'
-                }}>
-                    <View style={{
-                        width: '40%',
-                        backgroundColor: '#fff',
-                        borderRadius: 12,
-                        padding: 20,
-                        elevation: 5
-                    }}>
-                        <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 15 }}>Confirm Delete</Text>
-                        <Text style={{ marginBottom: 20 }}>
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalBox}>
+                        <Text style={styles.modalTitle}>Confirm Delete</Text>
+                        <Text style={styles.modalMessage}>
                             Are you sure you want to delete {selectedStudent?.user.first_name} {selectedStudent?.user.last_name}?
                         </Text>
 
-                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-                            <Pressable
-                                style={{
-                                    paddingVertical: 8,
-                                    paddingHorizontal: 15,
-                                    borderRadius: 8,
-                                    marginLeft: 10,
-                                    backgroundColor: '#ccc'
-                                }}
-                                onPress={() => setDeleteModalVisible(false)}
-                            >
-                                <Text style={{ color: '#fff', fontWeight: 'bold' }}>Cancel</Text>
+                        <View style={styles.modalButtonRow}>
+                            <Pressable style={styles.modalCancelButton} onPress={() => setDeleteModalVisible(false)}>
+                                <Text style={styles.modalCancelText}>Cancel</Text>
                             </Pressable>
 
-                            <Pressable
-                                style={{
-                                    paddingVertical: 8,
-                                    paddingHorizontal: 15,
-                                    borderRadius: 8,
-                                    marginLeft: 10,
-                                    backgroundColor: 'red'
-                                }}
-                                onPress={handleDeleteStudent}
-                            >
-                                <Text style={{ color: '#fff', fontWeight: 'bold' }}>Delete</Text>
+                            <Pressable style={styles.modalDeleteButton} onPress={handleDeleteStudent}>
+                                <Text style={styles.modalDeleteText}>Delete</Text>
                             </Pressable>
                         </View>
                     </View>
