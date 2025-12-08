@@ -76,7 +76,7 @@ export default function ApplicationRecords() {
                 Submitted On: {new Date(item.submitted_at).toLocaleDateString()}
             </Text>
             <Text style={styles.detailText}>
-                Required Hours: {item.program.hours}
+                Hours: {item.program.hours}
             </Text>
             <Text style={styles.detailText}>
                 Status: **{(item.current_status || 'N/A').toUpperCase()}**
