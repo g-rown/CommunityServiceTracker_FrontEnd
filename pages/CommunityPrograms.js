@@ -162,6 +162,11 @@ export default function CommunityPrograms() {
 
 // --- STYLESHEET ---
 const styles = StyleSheet.create({
+
+    bg: {
+        flex: 1,
+    },
+    
     container: {
         flex: 1,
         backgroundColor: COLORS.backgroundLight,
